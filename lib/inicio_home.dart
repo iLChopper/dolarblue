@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
   final peso_c = TextEditingController();
   final dolar_c = TextEditingController();
   String precioDolarBlue = '';
+  bool isEnabled=false;
 
   Future<DolarModel> _dolarBlue() {
     return DolarApi().fetchDolar();
@@ -41,9 +42,23 @@ class _HomeState extends State<Home> {
         children: [
           precioDolar(),
           Row(
-            children: [
-              campo(l: '\$', peso_c),
-              campo(dolar_c),
+            mainAxisAlignment: MainAxisAlignment.center,
+            
+            children: [              
+               Container(
+                width: 200,
+                child: campoPeso()),
+                const SizedBox(width: 20),
+              ElevatedButton(onPressed: (){
+                setState(() {
+                  isEnabled=true;
+                });
+                  
+              }, child: Text(' USD => Peso')),
+                const SizedBox(width: 20),
+              Container(
+                width: 200,
+                child: campoDolar()),
             ],
           ),
           const SizedBox(height: 20),
@@ -59,7 +74,7 @@ class _HomeState extends State<Home> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             precioDolarBlue = snapshot.data!.blue!.valueBuy.toString();
-            return Text(snapshot.data!.blue!.valueBuy.toString());
+            return Text('Precio Dolar Blue: ${snapshot.data!.blue!.valueBuy}');
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
@@ -77,18 +92,37 @@ class _HomeState extends State<Home> {
         child: const Text('Cambio'));
   }
 
-  TextField campo(TextEditingController controller, {String l = 'USD'}) {
+  TextField campoPeso() {
     return TextField(
+       enabled: !isEnabled,
         keyboardType: TextInputType.number,
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: l,
+        controller: peso_c,
+        decoration: const InputDecoration(
+          labelText: 'Peso',
           floatingLabelBehavior: FloatingLabelBehavior.auto,
         ));
   }
 
+   TextField campoDolar() {
+    return TextField(
+      enabled: isEnabled,
+        keyboardType: TextInputType.number,
+        controller: dolar_c,
+        decoration: const InputDecoration(
+          labelText: 'USD',
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+        ));
+  }
+
+
   void _cambioDivisa(String p) {
-    double peso = double.parse(p);
-    dolar_c.text = (peso / double.parse(precioDolarBlue)).toString();
+    if (!isEnabled){
+double peso = double.parse(p);
+    dolar_c.text = (peso / double.parse(precioDolarBlue)).toStringAsFixed(3);
+    }else{
+      
+      peso_c.text= (double.parse(dolar_c.text)* double.parse(precioDolarBlue)).toStringAsFixed(3);
+    }
+    
   }
 }
