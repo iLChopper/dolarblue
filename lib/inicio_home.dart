@@ -27,6 +27,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final peso_c = TextEditingController();
   final dolar_c = TextEditingController();
+  String precioDolarBlue = '';
 
   Future<DolarModel> _dolarBlue() {
     return DolarApi().fetchDolar();
@@ -42,7 +43,8 @@ class _HomeState extends State<Home> {
               future: _dolarBlue(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text(snapshot.data!.blue!.valueAvg.toString());
+                  precioDolarBlue = snapshot.data!.blue!.valueBuy.toString();
+                  return Text(snapshot.data!.blue!.valueBuy.toString());
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
@@ -51,7 +53,10 @@ class _HomeState extends State<Home> {
           TextField(
               keyboardType: TextInputType.number,
               controller: peso_c,
-              decoration: const InputDecoration.collapsed(hintText: 'Peso')),
+              decoration: const InputDecoration(
+                labelText: 'Peso',
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+              )),
           const SizedBox(height: 20),
           ElevatedButton(
               onPressed: () {
@@ -64,7 +69,10 @@ class _HomeState extends State<Home> {
           TextField(
               controller: dolar_c,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration.collapsed(hintText: 'Dolar'))
+              decoration: const InputDecoration(
+                labelText: 'USD',
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+              ))
         ],
       ),
     );
@@ -72,6 +80,6 @@ class _HomeState extends State<Home> {
 
   void _cambioDivisa(String p) {
     double peso = double.parse(p);
-    dolar_c.text = (peso * 2).toString();
+    dolar_c.text = (peso / double.parse(precioDolarBlue)).toString();
   }
 }

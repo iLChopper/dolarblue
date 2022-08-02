@@ -67,7 +67,7 @@ class Oficial {
 }
 
 class OficialEuro {
-  int? valueAvg;
+  double? valueAvg;
   double? valueSell;
   double? valueBuy;
 

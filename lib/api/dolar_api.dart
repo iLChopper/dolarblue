@@ -14,7 +14,7 @@ class DolarApi {
       return DolarModel.fromJson(json.decode(response.body));
     } else {
       // Si la llamada no fue exitosa, lanza un error.
-      throw Exception('Failed to load post');
+      throw Exception('Error al cargar los datos');
     }
   }
 }
