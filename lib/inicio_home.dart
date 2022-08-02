@@ -25,10 +25,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final peso_c = TextEditingController();
-  final dolar_c = TextEditingController();
+  final pesoc = TextEditingController();
+  final dolarc = TextEditingController();
   String precioDolarBlue = '';
-  bool isEnabled=false;
+  bool isEnabled = false;
 
   Future<DolarModel> _dolarBlue() {
     return DolarApi().fetchDolar();
@@ -43,22 +43,26 @@ class _HomeState extends State<Home> {
           precioDolar(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            
-            children: [              
-               Container(
-                width: 200,
-                child: campoPeso()),
-                const SizedBox(width: 20),
-              ElevatedButton(onPressed: (){
-                setState(() {
-                  isEnabled=true;
-                });
-                  
-              }, child: Text(' USD => Peso')),
-                const SizedBox(width: 20),
-              Container(
-                width: 200,
-                child: campoDolar()),
+            children: [
+              Container(width: 200, child: campoPeso()),
+              const SizedBox(width: 20),
+              IconButton(
+                icon: Image.asset('android/assets/images/changedolar.png'),
+                iconSize: 50,
+                onPressed: () {
+                  setState(() {
+                    dolarc.text = '';
+                    pesoc.text = '';
+                    if (!isEnabled) {
+                      isEnabled = true;
+                    } else {
+                      isEnabled = false;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(width: 20),
+              Container(width: 200, child: campoDolar()),
             ],
           ),
           const SizedBox(height: 20),
@@ -86,7 +90,7 @@ class _HomeState extends State<Home> {
     return ElevatedButton(
         onPressed: () {
           setState(() {
-            _cambioDivisa(peso_c.text);
+            _cambioDivisa();
           });
         },
         child: const Text('Cambio'));
@@ -94,35 +98,33 @@ class _HomeState extends State<Home> {
 
   TextField campoPeso() {
     return TextField(
-       enabled: !isEnabled,
+        enabled: !isEnabled,
         keyboardType: TextInputType.number,
-        controller: peso_c,
+        controller: pesoc,
         decoration: const InputDecoration(
           labelText: 'Peso',
           floatingLabelBehavior: FloatingLabelBehavior.auto,
         ));
   }
 
-   TextField campoDolar() {
+  TextField campoDolar() {
     return TextField(
-      enabled: isEnabled,
+        enabled: isEnabled,
         keyboardType: TextInputType.number,
-        controller: dolar_c,
+        controller: dolarc,
         decoration: const InputDecoration(
           labelText: 'USD',
           floatingLabelBehavior: FloatingLabelBehavior.auto,
         ));
   }
 
-
-  void _cambioDivisa(String p) {
-    if (!isEnabled){
-double peso = double.parse(p);
-    dolar_c.text = (peso / double.parse(precioDolarBlue)).toStringAsFixed(3);
-    }else{
-      
-      peso_c.text= (double.parse(dolar_c.text)* double.parse(precioDolarBlue)).toStringAsFixed(3);
+  void _cambioDivisa() {
+    if (!isEnabled) {
+      dolarc.text = (double.parse(pesoc.text) / double.parse(precioDolarBlue))
+          .toStringAsFixed(3);
+    } else {
+      pesoc.text = (double.parse(dolarc.text) * double.parse(precioDolarBlue))
+          .toStringAsFixed(3);
     }
-    
   }
 }
