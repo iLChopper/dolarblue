@@ -39,43 +39,52 @@ class _HomeState extends State<Home> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          FutureBuilder<DolarModel>(
-              future: _dolarBlue(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  precioDolarBlue = snapshot.data!.blue!.valueBuy.toString();
-                  return Text(snapshot.data!.blue!.valueBuy.toString());
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return Container();
-              }),
-          TextField(
-              keyboardType: TextInputType.number,
-              controller: peso_c,
-              decoration: const InputDecoration(
-                labelText: 'Peso',
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-              )),
+          precioDolar(),
+          Row(
+            children: [
+              campo(l: '\$', peso_c),
+              campo(dolar_c),
+            ],
+          ),
           const SizedBox(height: 20),
-          ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _cambioDivisa(peso_c.text);
-                });
-              },
-              child: const Text('Cambio')),
-          const SizedBox(height: 20),
-          TextField(
-              controller: dolar_c,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'USD',
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-              ))
+          boton(),
         ],
       ),
     );
+  }
+
+  FutureBuilder<DolarModel> precioDolar() {
+    return FutureBuilder<DolarModel>(
+        future: _dolarBlue(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            precioDolarBlue = snapshot.data!.blue!.valueBuy.toString();
+            return Text(snapshot.data!.blue!.valueBuy.toString());
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+          return Container();
+        });
+  }
+
+  ElevatedButton boton() {
+    return ElevatedButton(
+        onPressed: () {
+          setState(() {
+            _cambioDivisa(peso_c.text);
+          });
+        },
+        child: const Text('Cambio'));
+  }
+
+  TextField campo(TextEditingController controller, {String l = 'USD'}) {
+    return TextField(
+        keyboardType: TextInputType.number,
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: l,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+        ));
   }
 
   void _cambioDivisa(String p) {
