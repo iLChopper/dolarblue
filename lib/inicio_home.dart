@@ -1,14 +1,18 @@
+
+
 import 'package:dolarblue/api/dolar_api.dart';
 import 'package:dolarblue/model/dolar_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Inicio extends StatelessWidget {
   const Inicio({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
         body: Home(),
       ),
@@ -17,7 +21,7 @@ class Inicio extends StatelessWidget {
 }
 
 class Home extends StatefulWidget {
-  Home({
+  const Home({
     Key? key,
   }) : super(key: key);
 
@@ -30,6 +34,9 @@ class _HomeState extends State<Home> {
   final dolarc = TextEditingController();
   String precioDolarBlue = '';
   bool isEnabled = false;
+  DateTime now = DateTime.now();
+ final df =  DateFormat('dd-MM-yyyy hh:mm a');
+
 
   Future<DolarModel> _dolarBlue() {
     return DolarApi().fetchDolar();
@@ -51,71 +58,73 @@ class _HomeState extends State<Home> {
             disabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.white38))),
         textTheme: const TextTheme(
-            /*  headline1:
-               
-           TextStyle(
-              fontFamily:  
-                fontSize: 36.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87),*/
+           
             subtitle1: TextStyle(color: Colors.white, fontSize: 25)),
       ),
       home: Scaffold(
         backgroundColor: Colors.amberAccent,
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,          
           children: [
-            Container(
-                width: 300,
-                height: 300,
-                margin: const EdgeInsets.only(top: 70),
-                decoration: const BoxDecoration(
-                    color: Color.fromRGBO(53, 55, 88, 1),
-                    shape: BoxShape.circle),
-                child: Center(child: precioDolar())),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 100),
-                padding: const EdgeInsets.only(top: 120),
-                decoration: const BoxDecoration(
-                    color: Color.fromRGBO(53, 55, 88, 1),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(37.5),
-                      topRight: Radius.circular(37.5),
-                    )),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(width: 60, child: campoPeso()),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          splashColor: Colors.white,
-                          icon: Image.asset(
-                              'android/assets/images/changedolar.png'),
-                          iconSize: 50,
-                          highlightColor: Colors.white,
-                          tooltip: 'Cambio',
-                          onPressed: () {
-                            setState(() {
-                              dolarc.text = '';
-                              pesoc.text = '';
-                              isEnabled = !isEnabled;
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 20),
-                        SizedBox(width: 60, child: campoDolar()),
-                      ],
-                    ),
-                    const SizedBox(height: 50),
-                    boton(),
-                  ],
+            SizedBox(
+              width: 80,
+              height: 80,
+              child: SvgPicture.asset("android/assets/images/dolarsvg.svg")),
+            precioDolar(),
+           
+             Expanded(
+               child: Container(  
+                padding: const EdgeInsets.only(top:10),
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(53, 55, 88, 1),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(37.5),
+                        topRight: Radius.circular(37.5),
+                      )),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 60, child: campoPeso()),
+                          const SizedBox(width: 20),
+                          Container(
+                            decoration:const BoxDecoration(color:Colors.white, shape: BoxShape.circle) ,
+                            child: IconButton(
+                              splashColor: Colors.white,
+                              icon: Image.asset(
+                                  'android/assets/images/changedolar.png'),
+                              iconSize: 50,
+                              highlightColor: Colors.white,
+                              tooltip: 'Cambio',
+                              onPressed: () {
+                                setState(() {
+                                  dolarc.text = '';
+                                  pesoc.text = '';
+                                  isEnabled = !isEnabled;
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          SizedBox(width: 60, child: campoDolar()),
+                        ],
+                      ),
+                      const SizedBox(height: 50),
+                      boton(),
+                      const Spacer(),
+                      Center(
+                        child: Text('rodrigo.desarrollador@gmail.com',  style: GoogleFonts.pacifico(
+                          textStyle:
+                              const TextStyle(color: Colors.white, fontSize: 25))),
+                      ), const SizedBox(height: 10)
+
+                    ],
+                  ),
                 ),
-              ),
-            ),
+             ),
+           
           ],
         ),
       ),
@@ -128,12 +137,29 @@ class _HomeState extends State<Home> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             precioDolarBlue = snapshot.data!.blue!.valueBuy.toString();
-            return Text(
-              '${snapshot.data!.blue!.valueBuy}\n Dolar Blue',
-              style: GoogleFonts.pacifico(
-                  textStyle:
-                      const TextStyle(color: Colors.white, fontSize: 40)),
-              textAlign: TextAlign.center,
+            return Column(
+              children: [
+                SizedBox(
+                  height: 50,
+                  width: 300,
+                  child: Text( textAlign: TextAlign.center,
+                    'Dolar Blue: ${snapshot.data!.blue!.valueBuy}',
+                    style: GoogleFonts.playfairDisplay(
+                        textStyle:
+                            const TextStyle(color: Colors.white, fontSize: 25)),
+                    
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                    'Última Actualización: ${df.format(DateTime.parse(snapshot.data!.lastUpdate!) )}',
+                    style: GoogleFonts.montserrat(
+                        textStyle:
+                            const TextStyle(color: Colors.black, fontSize: 15)),
+                    
+                  ),const SizedBox(height: 10),
+
+              ],
             );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
@@ -144,12 +170,16 @@ class _HomeState extends State<Home> {
 
   ElevatedButton boton() {
     return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+              fixedSize: const Size(100, 100),
+              shape: const CircleBorder(), 
+          ),
         onPressed: () {
           setState(() {
             _cambioDivisa();
           });
         },
-        child: const Text('Calcular'));
+        child: const Text('Calcular', style: TextStyle(fontSize: 17),));
   }
 
   TextField campoPeso() {
