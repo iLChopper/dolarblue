@@ -12,8 +12,27 @@ class Inicio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        inputDecorationTheme: const InputDecorationTheme(
+            labelStyle: TextStyle(color: Colors.white),
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.amberAccent),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.amberAccent),
+            ),
+            disabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.white38))),
+        textTheme: const TextTheme(
+           
+            subtitle1: TextStyle(color: Colors.white, fontSize: 25)),
+      ),
       home: Scaffold(
+       
+        backgroundColor: Colors.amberAccent,
+       
         body: Home(),
       ),
     );
@@ -33,102 +52,96 @@ class _HomeState extends State<Home> {
   final pesoc = TextEditingController();
   final dolarc = TextEditingController();
   String precioDolarBlue = '';
-  bool isEnabled = false;
-  DateTime now = DateTime.now();
+  bool isEnabled = false; 
  final df =  DateFormat('dd-MM-yyyy hh:mm a');
 
-
+//Consulta Servicio y devuelve info del Dolar
   Future<DolarModel> _dolarBlue() {
     return DolarApi().fetchDolar();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        inputDecorationTheme: const InputDecorationTheme(
-            labelStyle: TextStyle(color: Colors.white),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.amberAccent),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: Colors.amberAccent),
-            ),
-            disabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white38))),
-        textTheme: const TextTheme(
-           
-            subtitle1: TextStyle(color: Colors.white, fontSize: 25)),
-      ),
-      home: Scaffold(
-        backgroundColor: Colors.amberAccent,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,          
-          children: [
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: SvgPicture.asset("android/assets/images/dolarsvg.svg")),
-            precioDolar(),
-           
-             Expanded(
-               child: Container(  
-                padding: const EdgeInsets.only(top:10),
-                  decoration: const BoxDecoration(
-                      color: Color.fromRGBO(53, 55, 88, 1),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(37.5),
-                        topRight: Radius.circular(37.5),
-                      )),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+    return  SingleChildScrollView(
+      child: Container(
+         height:MediaQuery.of(context).size.height,
+         width:MediaQuery.of(context).size.width, 
+        child: Column(
+              
+              mainAxisAlignment: MainAxisAlignment.center,          
+              children: [
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: SvgPicture.asset("android/assets/images/dolarsvg.svg")),
+                precioDolar(),
+               
+                 Expanded(
+                   child: Container(  
+                    padding: const EdgeInsets.only(top:20),
+                    margin:const EdgeInsets.only(top:100) ,
+                      decoration: const BoxDecoration(
+                          color: Color.fromRGBO(53, 55, 88, 1),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(37.5),
+                            topRight: Radius.circular(37.5),
+                          )),
+                      child: Column(
+                       
                         children: [
-                          SizedBox(width: 60, child: campoPeso()),
-                          const SizedBox(width: 20),
-                          Container(
-                            decoration:const BoxDecoration(color:Colors.white, shape: BoxShape.circle) ,
-                            child: IconButton(
-                              splashColor: Colors.white,
-                              icon: Image.asset(
-                                  'android/assets/images/changedolar.png'),
-                              iconSize: 50,
-                              highlightColor: Colors.white,
-                              tooltip: 'Cambio',
-                              onPressed: () {
-                                setState(() {
-                                  dolarc.text = '';
-                                  pesoc.text = '';
-                                  isEnabled = !isEnabled;
-                                });
-                              },
+                          _camposDatos(),
+                          const SizedBox(height: 50),
+                          botonCalcular(),
+                          const Spacer(),
+                          Center(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Text('rodrigo.desarrollador@gmail.com',  style: GoogleFonts.pacifico(
+                                textStyle:
+                                    const TextStyle(color: Colors.white, fontSize: 20))),
                             ),
-                          ),
-                          const SizedBox(width: 20),
-                          SizedBox(width: 60, child: campoDolar()),
+                          ), const SizedBox(height: 10)
+    
                         ],
                       ),
-                      const SizedBox(height: 50),
-                      boton(),
-                      const Spacer(),
-                      Center(
-                        child: Text('rodrigo.desarrollador@gmail.com',  style: GoogleFonts.pacifico(
-                          textStyle:
-                              const TextStyle(color: Colors.white, fontSize: 25))),
-                      ), const SizedBox(height: 10)
-
-                    ],
-                  ),
-                ),
-             ),
+                    ),
+                 ),
+               
+              ],
            
-          ],
         ),
       ),
     );
+  }
+
+  Row _camposDatos() {
+    return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(width: 70, child: campoPeso()),
+                            const SizedBox(width: 20),
+                            Container(
+                              decoration:const BoxDecoration(color:Colors.white, shape: BoxShape.circle) ,
+                              child: IconButton(
+                                splashColor: Colors.white,
+                                icon: Image.asset(
+                                    'android/assets/images/changedolar.png'),
+                                iconSize: 50,
+                                highlightColor: Colors.white,
+                                tooltip: 'Cambio',
+                                onPressed: () {
+                                  setState(() {
+                                    dolarc.text = '';
+                                    pesoc.text = '';
+                                    isEnabled = !isEnabled;
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            SizedBox(width: 70, child: campoDolar()),
+                          ],
+                        );
   }
 
   FutureBuilder<DolarModel> precioDolar() {
@@ -146,18 +159,21 @@ class _HomeState extends State<Home> {
                     'Dolar Blue: ${snapshot.data!.blue!.valueBuy}',
                     style: GoogleFonts.playfairDisplay(
                         textStyle:
-                            const TextStyle(color: Colors.white, fontSize: 25)),
+                            const TextStyle(color: Colors.black, fontSize: 25)),
                     
                   ),
                 ),
-                const SizedBox(height: 10),
-                Text(
-                    'Última Actualización: ${df.format(DateTime.parse(snapshot.data!.lastUpdate!) )}',
-                    style: GoogleFonts.montserrat(
-                        textStyle:
-                            const TextStyle(color: Colors.black, fontSize: 15)),
-                    
-                  ),const SizedBox(height: 10),
+                const SizedBox(height: 30),
+                Container(
+                 
+                  child: Text(
+                      'Última Actualización: ${df.format(DateTime.parse(snapshot.data!.lastUpdate!) )}',
+                      style: GoogleFonts.montserrat(
+                          textStyle:
+                              const TextStyle(color: Colors.black, fontSize: 15)),
+                      
+                    ),
+                ),const SizedBox(height: 10),
 
               ],
             );
@@ -168,7 +184,7 @@ class _HomeState extends State<Home> {
         });
   }
 
-  ElevatedButton boton() {
+  ElevatedButton botonCalcular() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
               fixedSize: const Size(100, 100),
