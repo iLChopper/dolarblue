@@ -27,7 +27,7 @@ class Inicio extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.white38))),
         textTheme: const TextTheme(
            
-            subtitle1: TextStyle(color: Colors.white, fontSize: 25)),
+            subtitle1: TextStyle(color: Colors.white, fontSize: 20)),
       ),
       home: Scaffold(
        
@@ -118,7 +118,7 @@ class _HomeState extends State<Home> {
     return Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(width: 70, child: campoPeso()),
+                            SizedBox(width: 100, child: campoPeso()),
                             const SizedBox(width: 20),
                             Container(
                               decoration:const BoxDecoration(color:Colors.white, shape: BoxShape.circle) ,
@@ -139,7 +139,7 @@ class _HomeState extends State<Home> {
                               ),
                             ),
                             const SizedBox(width: 20),
-                            SizedBox(width: 70, child: campoDolar()),
+                            SizedBox(width: 100, child: campoDolar()),
                           ],
                         );
   }
@@ -224,10 +224,10 @@ class _HomeState extends State<Home> {
   void _cambioDivisa() {
     if (!isEnabled) {
       dolarc.text = (double.parse(pesoc.text) / double.parse(precioDolarBlue))
-          .toStringAsFixed(3);
+          .toStringAsFixed(1);
     } else {
       pesoc.text = (double.parse(dolarc.text) * double.parse(precioDolarBlue))
-          .toStringAsFixed(3);
+          .toStringAsFixed(1);
     }
   }
 }
